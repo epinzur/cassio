@@ -5,12 +5,19 @@ ColumnSpecType = Tuple[str, str]
 RowType = Dict[str, Any]
 RowWithDistanceType = Dict[str, Any]
 SessionType = Any
+Not = Any
 
 
 class MetadataIndexingMode(Enum):
     DEFAULT_TO_UNSEARCHABLE = 1
     DEFAULT_TO_SEARCHABLE = 2
 
+class SelectColumn(Enum):
+    PARTITION_ID = 1
+    ROW_ID = 2
+    BODY = 3
+    METADATA = 4
+    VECTOR = 5
 
 MetadataIndexingPolicy = Tuple[MetadataIndexingMode, Set[str]]
 

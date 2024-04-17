@@ -10,7 +10,7 @@ from cassio.table.cql import (
     CQLOpType,
 )
 from .base_table import BaseTableMixin
-from cassio.table.table_types import ColumnSpecType, RowType, RowWithDistanceType
+from cassio.table.table_types import ColumnSpecType, RowType, RowWithDistanceType, SelectColumn
 from cassio.utils.vector.distance_metrics import distance_metrics
 
 
@@ -132,7 +132,7 @@ class VectorMixin(BaseTableMixin):
         return select_ann_cql, select_ann_cql_vals
 
     def ann_search(
-        self, vector: List[float], n: int, **kwargs: Any
+        self, vector: List[float], n: int, columns: Optional[List[SelectColumn]] = None, **kwargs: Any
     ) -> Iterable[RowType]:
         select_ann_cql, select_ann_cql_vals = self._get_ann_search_cql(
             vector, n, **kwargs

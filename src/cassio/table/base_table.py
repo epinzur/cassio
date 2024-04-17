@@ -22,6 +22,7 @@ from cassio.config import check_resolve_session, check_resolve_keyspace
 from cassio.table.table_types import (
     ColumnSpecType,
     RowType,
+    SelectColumn,
     SessionType,
     normalize_type_desc,
 )
@@ -287,7 +288,7 @@ class BaseTable:
             where_clause = "WHERE " + " AND ".join(all_where_clauses)
         return columns_desc, where_clause, select_cql_vals + analyzer_cql_vals
 
-    def _get_select_cql(self, **kwargs: Any) -> Tuple[str, Tuple[Any, ...]]:
+    def _get_select_cql(self, columns: Optional[List[SelectColumn]] = None, **kwargs: Any) -> Tuple[str, Tuple[Any, ...]]:
         columns_desc, where_clause, get_cql_vals = self._parse_select_core_params(
             **kwargs
         )
@@ -315,9 +316,9 @@ class BaseTable:
         else:
             return self._normalize_row(result)
 
-    def get(self, **kwargs: Any) -> Optional[RowType]:
+    def get(self, columns: Optional[List[SelectColumn]] = None, **kwargs: Any) -> Optional[RowType]:
         self._ensure_db_setup()
-        select_cql, select_vals = self._get_select_cql(**kwargs)
+        select_cql, select_vals = self._get_select_cql(columns=columns, **kwargs)
         # dancing around the result set (to comply with type checking):
         result_set = self.execute_cql(
             select_cql, args=select_vals, op_type=CQLOpType.READ
